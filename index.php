@@ -1,28 +1,41 @@
 <?php
-error_reporting(-1);
-require 'vendor/autoload.php';
-require_once "config/config.php";
-require_once "system/Database.php";
-require_once "config/mail.php";
+require '../vendor/autoload.php';
+require_once "../config/config.php";
+require_once "../system/Database.php";
+require_once "../config/mail.php";
 
 
-$phpVersion = phpversion();
-
-    $uri = isset($_GET['url']) ? $_GET['url'] : 'home';
+$uri = isset($_GET['url']) ? $_GET['url'] : 'dashboard';
 
 
 $title = $uri;
 
+$uri = $uri . '.php';
 
-$patePath = page_path('pages/' . $uri . '.php');
+if (!isset($_SESSION['username']) || $_SESSION['is_login'] != true) {
+    $_SESSION['error'] = "Please login first";
+    redirect_to('admin/login');
+    exit();
+}
+
+
+$patePath = page_path('admin/pages/' . $uri);
+
 
 require_once "layouts/header.php";
-require_once page_path('layouts/nav.php');
-if (file_exists($patePath) && is_file($patePath)) {
 
+
+if (file_exists($patePath) && is_file($patePath)) {
+    require_once "layouts/nav.php";
+    require_once "layouts/top-header.php";
     require_once $patePath;
 } else {
-    require_once page_path('messages/errors/404.php');
+    echo "
+<div class='right_col' role='main'>
+<hr>Sorry Page not found</h1>
+</div>
+";
+
 }
 
 

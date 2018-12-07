@@ -1,5 +1,7 @@
 <?php
-require_once "config/config.php";
+require_once "../config/config.php";
+
 session_destroy();
-header('Location:index.php');
+
+redirect_to('admin/login');
 exit();
